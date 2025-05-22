@@ -42,6 +42,10 @@ public class Usuario implements UserDetails {
     @Column(nullable = true, length = 20)
     private String cpf;
 
+    @Enumerated(EnumType.STRING)
+    @Column(insertable = false, updatable = false)
+    private Role role;
+
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
     private List<Token> tokens;
@@ -76,41 +80,6 @@ public class Usuario implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return "";
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 
     public void setPassword(String password) {
@@ -157,8 +126,52 @@ public class Usuario implements UserDetails {
         this.tokens = tokens;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public String getMensagemErro() {
         return mensagemErro;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        return role.getAuthorities();
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return "";
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override
@@ -173,11 +186,6 @@ public class Usuario implements UserDetails {
     public int hashCode() {
         return Objects.hashCode(id);
     }
-
-
-
-
-
 
 
     public boolean validarUsuario() {
